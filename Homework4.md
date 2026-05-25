@@ -169,7 +169,7 @@ public interface IStudentRepo<T> where T : StudentModel
 ```HTML
 <!-- File: Views/Cabinet/Index.cshtml -->
 
-<form method="get" asp-controller="Cabinet" asp-action="Edit">
+<form method="post" asp-controller="Cabinet" asp-action="Edit">
     <!-- Просто фрма с кнопкой редактироватью.
       Она через метод GET перебросит на страницу для редактирования,
       а та, в свою очередь будет иметь форму уже с методом POST,
