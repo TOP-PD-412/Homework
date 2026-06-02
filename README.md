@@ -48,7 +48,7 @@ git config --global user.email "<youremail@example.com>"
    добавляем `/fork` и получаем:
 
    | Группа | `Fork`-ссылка                                      |
-                        | ------ | -------------------------------------------------- |
+   | ------ | -------------------------------------------------- |
    | ПД-412 | https://github.com/TOP-PD-412/PersonalAccount/fork |
    | П-318  | https://github.com/TOP-P-318/PersonalAccount/fork  |
    | П-319  | https://github.com/TOP-P-319/PersonalAccount/fork  |
