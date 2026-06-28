@@ -41,6 +41,8 @@ Controller → [JSON] → Client
 Client → Frontend (Next.js) → рисует HTML/CSS/JS
 ```
 
+![Поток запроса: браузер ↔ сервер по HTTP и внутреннее устройство ASP.NET Core — EF, Razor Pages, MVC, Web API, Auth, Router](images/01-request-flow.svg)
+
 ### Почему именно так
 Главное различие — **кто формирует то, что увидит пользователь**:
 - Razor Pages и MVC рендерят **готовый HTML на сервере** — браузер получает страницу.
@@ -170,6 +172,10 @@ public override ProductModel MapToModel(ProductEntity entity) =>
         // ...
     };
 ```
+
+![Слои приложения: View ← ViewModel ← Model ← Entity ← таблица в БД; мапперы между слоями (Views / Services / Repositories)](images/03-layers.svg)
+
+![Структура общих компонентов: Entity / Model / ViewModel, репозитории, мапперы и сущности домена (Account, Student, Teacher, Admin)](images/03-components.svg)
 
 ### Почему именно так
 **Разделение ответственности.** Если свалить всё в контроллер — он превращается в «кашу».
