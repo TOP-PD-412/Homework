@@ -27,7 +27,7 @@ Client → Server → Page → PageModel → On[GET/POST] → Update(Page) → C
 Браузер запрашивает страницу → отрабатывает `OnGet`/`OnPostDelete` в `IndexModel` →
 рендерится HTML → уходит клиенту.
 
-<img src="images/13.svg" alt="Структура проекта Razor Pages" width="520">
+<img src="images/13.svg" alt="Структура проекта Razor Pages" width="780">
 
 *Razor Pages: Router → Page (+ Model). Page отвечает и за маршрут, и за представление.*
 
@@ -38,7 +38,7 @@ Client → Server → Controller → выбирает действие → го�
 Один `CabinetController` обслуживает несколько представлений (`Index`, `Student`, `Admin`,
 `Edit`). Логика отделена от разметки.
 
-<img src="images/11.svg" alt="Структура проекта MVC" width="610">
+<img src="images/11.svg" alt="Структура проекта MVC" width="915">
 
 *MVC: Router → Controller, который готовит Model и выбирает View.*
 
@@ -49,11 +49,11 @@ Controller → [JSON] → Client
 Client → Frontend (Next.js) → рисует HTML/CSS/JS
 ```
 
-<img src="images/10.svg" alt="Структура проекта Web API" width="455">
+<img src="images/10.svg" alt="Структура проекта Web API" width="685">
 
 *Web API: Router → Controller, наружу — Request/Response DTO; ответ в JSON.*
 
-<img src="images/14.svg" alt="Поток запроса и устройство ASP.NET Core" width="725">
+<img src="images/14.svg" alt="Поток запроса и устройство ASP.NET Core" width="1090">
 
 *Общий поток: на входе Router и Auth, затем один из подходов (Razor Pages / MVC / Web API) и EF Core к базе. Справа — как Router разбирает `POST /Users/Create` на controller и action.*
 
@@ -187,15 +187,15 @@ public override ProductModel MapToModel(ProductEntity entity) =>
     };
 ```
 
-<img src="images/15.svg" alt="Слои: контроллер → сервис → репозиторий → база" width="655">
+<img src="images/15.svg" alt="Слои: контроллер → сервис → репозиторий → база" width="985">
 
 *Контроллер принимает запрос, сервис отвечает за бизнес-логику, репозиторий — за хранение и получение данных, дальше база.*
 
-<img src="images/12.svg" alt="Представление-модель-сущность" width="365">
+<img src="images/12.svg" alt="Представление-модель-сущность" width="550">
 
 *Одни и те же данные на каждом слое: таблица → Entity → Model → ViewModel → View, между слоями — мапперы.*
 
-<img src="images/07.svg" alt="Структура общих компонентов" width="590">
+<img src="images/07.svg" alt="Структура общих компонентов" width="885">
 
 *Сущности домена: Account (Id, Email, PasswordHash, Role) и профили Student / Teacher / Admin, Group — каждая со своими полями.*
 
@@ -308,11 +308,11 @@ Postgres — отдельный сервер, к которому подключ
 почти одинаковый — меняются в основном строка подключения и провайдер (`UseSqlite` vs
 `UseNpgsql`).
 
-<img src="images/01.svg" alt="SQLite против PostgreSQL" width="340">
+<img src="images/01.svg" alt="SQLite против PostgreSQL" width="510">
 
 *SQLite — встроенная библиотека: вся база лежит в одном файле. PostgreSQL — отдельный сервер, к нему ходят по сети; приложение при этом stateless.*
 
-<img src="images/16.svg" alt="Значения по умолчанию и генерация ID" width="350">
+<img src="images/16.svg" alt="Значения по умолчанию и генерация ID" width="525">
 
 *Значения по умолчанию можно задавать на уровне БД или приложения; иногда ID нужен ещё до записи в базу; время удобнее хранить в UTC.*
 
@@ -502,11 +502,11 @@ var result = hasher.VerifyHashedPassword(account, account.PasswordHash, input);/
 if (result == PasswordVerificationResult.Failed) return null;
 ```
 
-<img src="images/06.svg" alt="Вход, выход и личный кабинет" width="865">
+<img src="images/06.svg" alt="Вход, выход и личный кабинет" width="1300">
 
 *Личный кабинет: `GET /Account/Index` открывает страницу пользователя, `POST /Auth/Login` проверяет email и пароль, выход — отдельный маршрут.*
 
-<img src="images/02.svg" alt="Роли и доступ" width="755">
+<img src="images/02.svg" alt="Роли и доступ" width="1135">
 
 *Роли задают доступ: админ управляет всеми, преподаватель ставит оценки и выдаёт ДЗ, студент видит только свои данные.*
 
@@ -626,7 +626,7 @@ public sealed class ProductsController(ProductsService productsService) : Contro
 }
 ```
 
-<img src="images/04.svg" alt="REST API: методы и передача данных" width="280">
+<img src="images/04.svg" alt="REST API: методы и передача данных" width="420">
 
 *REST задаёт стандартные методы (GET / POST / PUT / PATCH / DELETE) и три способа передать данные: query-параметры, путь или тело запроса.*
 
@@ -681,11 +681,11 @@ services.AddDataProtection()
     .SetApplicationName("MarketplaceApi");
 ```
 
-<img src="images/09.svg" alt="Схема Marketplace и gateway" width="210">
+<img src="images/09.svg" alt="Схема Marketplace и gateway" width="315">
 
 *Marketplace разбит на сервисы (Products, Users, Auth, Cabinet, Requests, Payment); перед ними NGinX как реверс-прокси — единая точка входа для клиента.*
 
-<img src="images/08.svg" alt="Docker: образ и контейнер" width="595">
+<img src="images/08.svg" alt="Docker: образ и контейнер" width="895">
 
 *Docker: из образа поднимается контейнер с рантаймом и приложением (.NET / NextJS / PostgreSQL / Redis); образы берутся из Hub, и тот же образ запускается и локально, и на сервере.*
 
@@ -787,7 +787,7 @@ SELECT * FROM users WHERE id = @p0 FOR UPDATE
 HTTP — протокол «запрос–ответ» между клиентом и сервером. Сквозная база под авторизацию, API
 и формы.
 
-<img src="images/05.svg" alt="Веб-приложение слушает порт" width="340">
+<img src="images/05.svg" alt="Веб-приложение слушает порт" width="510">
 
 *Веб-приложение, в отличие от десктопного, слушает порт и общается с клиентом по сети — поверх HTTP.*
 
@@ -877,7 +877,7 @@ export default interface ProductPreview {
 - **Pull Request** — домашку сдавали ссылкой на **открытый** PR (ветка `homework-xxx` → ветка
   занятия в своём же форке).
 
-<img src="images/03.svg" alt="Git: рабочий процесс" width="975">
+<img src="images/03.svg" alt="Git: рабочий процесс" width="1465">
 
 *Файл проходит стадии: рабочий каталог (unstaged) → `git add` → staged → `git commit` → локальный репозиторий → `git push` → GitHub; коллега берёт проект через `git clone`.*
 
