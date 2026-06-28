@@ -27,12 +27,20 @@ Client → Server → Page → PageModel → On[GET/POST] → Update(Page) → C
 Браузер запрашивает страницу → отрабатывает `OnGet`/`OnPostDelete` в `IndexModel` →
 рендерится HTML → уходит клиенту.
 
+<img src="images/13.svg" alt="Структура проекта Razor Pages" width="520">
+
+*Razor Pages: Router → Page (+ Model). Page отвечает и за маршрут, и за представление.*
+
 **MVC (PersonalAccount).** Запрос принимает контроллер:
 ```
 Client → Server → Controller → выбирает действие → готовит Model → передаёт во View → HTML → Client
 ```
 Один `CabinetController` обслуживает несколько представлений (`Index`, `Student`, `Admin`,
 `Edit`). Логика отделена от разметки.
+
+<img src="images/11.svg" alt="Структура проекта MVC" width="610">
+
+*MVC: Router → Controller, который готовит Model и выбирает View.*
 
 **Web API (Marketplace).** Контроллер возвращает данные, а не страницу:
 ```
@@ -41,7 +49,13 @@ Controller → [JSON] → Client
 Client → Frontend (Next.js) → рисует HTML/CSS/JS
 ```
 
-![Поток запроса: браузер ↔ сервер по HTTP и внутреннее устройство ASP.NET Core — EF, Razor Pages, MVC, Web API, Auth, Router](images/01-request-flow.svg)
+<img src="images/10.svg" alt="Структура проекта Web API" width="455">
+
+*Web API: Router → Controller, наружу — Request/Response DTO; ответ в JSON.*
+
+<img src="images/14.svg" alt="Поток запроса и устройство ASP.NET Core" width="725">
+
+*Общий поток: на входе Router и Auth, затем один из подходов (Razor Pages / MVC / Web API) и EF Core к базе. Справа — как Router разбирает `POST /Users/Create` на controller и action.*
 
 ### Почему именно так
 Главное различие — **кто формирует то, что увидит пользователь**:
@@ -173,9 +187,17 @@ public override ProductModel MapToModel(ProductEntity entity) =>
     };
 ```
 
-![Слои приложения: View ← ViewModel ← Model ← Entity ← таблица в БД; мапперы между слоями (Views / Services / Repositories)](images/03-layers.svg)
+<img src="images/15.svg" alt="Слои: контроллер → сервис → репозиторий → база" width="655">
 
-![Структура общих компонентов: Entity / Model / ViewModel, репозитории, мапперы и сущности домена (Account, Student, Teacher, Admin)](images/03-components.svg)
+*Контроллер принимает запрос, сервис отвечает за бизнес-логику, репозиторий — за хранение и получение данных, дальше база.*
+
+<img src="images/12.svg" alt="Представление-модель-сущность" width="365">
+
+*Одни и те же данные на каждом слое: таблица → Entity → Model → ViewModel → View, между слоями — мапперы.*
+
+<img src="images/07.svg" alt="Структура общих компонентов" width="590">
+
+*Сущности домена: Account (Id, Email, PasswordHash, Role) и профили Student / Teacher / Admin, Group — каждая со своими полями.*
 
 ### Почему именно так
 **Разделение ответственности.** Если свалить всё в контроллер — он превращается в «кашу».
@@ -285,6 +307,14 @@ await set.AsNoTracking().Select(e => mapper.MapToModel(e)).ToArrayAsync();
 Postgres — отдельный сервер, к которому подключаются по сети.** Код через EF Core при этом
 почти одинаковый — меняются в основном строка подключения и провайдер (`UseSqlite` vs
 `UseNpgsql`).
+
+<img src="images/01.svg" alt="SQLite против PostgreSQL" width="340">
+
+*SQLite — встроенная библиотека: вся база лежит в одном файле. PostgreSQL — отдельный сервер, к нему ходят по сети; приложение при этом stateless.*
+
+<img src="images/16.svg" alt="Значения по умолчанию и генерация ID" width="350">
+
+*Значения по умолчанию можно задавать на уровне БД или приложения; иногда ID нужен ещё до записи в базу; время удобнее хранить в UTC.*
 
 ### Подводные камни
 - **Забыли `SaveChanges`** → «удалил/добавил/изменил, а в базе всё по-старому». Самая частая
@@ -472,6 +502,14 @@ var result = hasher.VerifyHashedPassword(account, account.PasswordHash, input);/
 if (result == PasswordVerificationResult.Failed) return null;
 ```
 
+<img src="images/06.svg" alt="Вход, выход и личный кабинет" width="865">
+
+*Личный кабинет: `GET /Account/Index` открывает страницу пользователя, `POST /Auth/Login` проверяет email и пароль, выход — отдельный маршрут.*
+
+<img src="images/02.svg" alt="Роли и доступ" width="755">
+
+*Роли задают доступ: админ управляет всеми, преподаватель ставит оценки и выдаёт ДЗ, студент видит только свои данные.*
+
 ### Почему именно так
 - **Cookie + claims:** после входа сервер выписывает зашифрованную cookie, в которой лежат
   claims (Id, Email, Role). На каждом следующем запросе браузер шлёт cookie, и приложение по
@@ -588,6 +626,10 @@ public sealed class ProductsController(ProductsService productsService) : Contro
 }
 ```
 
+<img src="images/04.svg" alt="REST API: методы и передача данных" width="280">
+
+*REST задаёт стандартные методы (GET / POST / PUT / PATCH / DELETE) и три способа передать данные: query-параметры, путь или тело запроса.*
+
 ### Почему именно так
 - **HTTP-методы под CRUD:** GET — получить, POST — создать, PUT — обновить, DELETE — удалить.
   Стандарт делает API предсказуемым: не нужно гадать, что делает ручка.
@@ -638,6 +680,14 @@ services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo("/home/app/.aspnet/keys"))
     .SetApplicationName("MarketplaceApi");
 ```
+
+<img src="images/09.svg" alt="Схема Marketplace и gateway" width="210">
+
+*Marketplace разбит на сервисы (Products, Users, Auth, Cabinet, Requests, Payment); перед ними NGinX как реверс-прокси — единая точка входа для клиента.*
+
+<img src="images/08.svg" alt="Docker: образ и контейнер" width="595">
+
+*Docker: из образа поднимается контейнер с рантаймом и приложением (.NET / NextJS / PostgreSQL / Redis); образы берутся из Hub, и тот же образ запускается и локально, и на сервере.*
 
 ### Почему именно так
 - **Разбиение на сервисы** даёт независимость: каждый отвечает за свою область (товары /
@@ -737,6 +787,10 @@ SELECT * FROM users WHERE id = @p0 FOR UPDATE
 HTTP — протокол «запрос–ответ» между клиентом и сервером. Сквозная база под авторизацию, API
 и формы.
 
+<img src="images/05.svg" alt="Веб-приложение слушает порт" width="340">
+
+*Веб-приложение, в отличие от десктопного, слушает порт и общается с клиентом по сети — поверх HTTP.*
+
 ### Ключевое
 - **Методы:** GET (получить), POST (создать/изменить), PUT (обновить), DELETE (удалить).
 - **Статус-коды:** 200 OK, 201 Created, 204 No Content, 401 Unauthorized (не вошёл),
@@ -822,6 +876,10 @@ export default interface ProductPreview {
 - **Ветки:** домашку делали в отдельной ветке `homework-xxx` от ветки занятия, не от master.
 - **Pull Request** — домашку сдавали ссылкой на **открытый** PR (ветка `homework-xxx` → ветка
   занятия в своём же форке).
+
+<img src="images/03.svg" alt="Git: рабочий процесс" width="975">
+
+*Файл проходит стадии: рабочий каталог (unstaged) → `git add` → staged → `git commit` → локальный репозиторий → `git push` → GitHub; коллега берёт проект через `git clone`.*
 
 ### Почему именно так
 - **Ветки** изолируют работу: эксперименты и домашка не ломают рабочую/основную ветку.
